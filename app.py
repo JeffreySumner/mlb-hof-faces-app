@@ -36,14 +36,18 @@ DEFAULT_STATE = {
     "quick_name": "",
     "threshold_player": float(DEFAULT_HOF_THRESHOLD),
     "threshold_upload": float(DEFAULT_HOF_THRESHOLD),
-    "upload_photo": None,
+    "upload_key_nonce": 0,
 }
 
 
 def reset_app_state():
     """Reset UI state and cached search data."""
     for key, value in DEFAULT_STATE.items():
-        st.session_state[key] = value
+        if key == "upload_key_nonce":
+            # file_uploader values cannot be assigned directly; bump key instead.
+            st.session_state[key] = int(st.session_state.get(key, 0)) + 1
+        else:
+            st.session_state[key] = value
     st.cache_data.clear()
 
 
@@ -182,10 +186,11 @@ with upload_tab:
         "Upload your own photo to see what the model predicts. "
         "This is for entertainment only."
     )
+    upload_key = f"upload_photo_{st.session_state.get('upload_key_nonce', 0)}"
     uploaded = st.file_uploader(
         "Upload a photo",
         type=["jpg", "jpeg", "png", "webp"],
-        key="upload_photo",
+        key=upload_key,
     )
     threshold_upload = st.slider(
         "HOF threshold (uploaded photo)",
