@@ -186,6 +186,10 @@ with upload_tab:
         "Upload your own photo to see what the model predicts. "
         "This is for entertainment only."
     )
+    st.caption(
+        "Privacy note: Uploaded photos are used only for on-the-fly prediction "
+        "in your current session and are not saved to disk or added to any dataset."
+    )
     upload_key = f"upload_photo_{st.session_state.get('upload_key_nonce', 0)}"
     uploaded = st.file_uploader(
         "Upload a photo",
